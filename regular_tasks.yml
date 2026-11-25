@@ -1,0 +1,16 @@
+---
+- name: Scheduled tasks
+  hosts: proxy
+  become: true
+  tasks:
+  - name: cron install
+    yum:
+      name: cronie
+      state: present 
+  - name: cron
+    cron:
+      name: "append date log"
+      special_time: "hourly"
+      user: root
+      job: "/usr/bin/date >> /var/log/time.log"
+

@@ -1,0 +1,19 @@
+---
+- name: Deploy custom facts
+  hosts: database
+  become: yes
+
+  tasks:
+    - name: Create facts directory
+      file:
+        path: /etc/ansible/facts.d
+        state: directory
+        mode: '0755'
+
+    - name: Deploy static application fact
+      copy:
+        content: |
+          [custom]
+          server_role=mysql
+        dest: /etc/ansible/facts.d/sample_exam.fact
+        mode: '0644'

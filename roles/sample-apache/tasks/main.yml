@@ -1,0 +1,34 @@
+---
+- name: Install http
+  become: true
+  yum:
+    name: "{{ item }}"
+    state: present
+  with_items:
+   - httpd
+   - mod_ssl
+   - php
+- name: Start HTTPD service
+  become: yes
+  systemd:
+    name: httpd 
+    state: started
+- name: Allow firewall
+  become: true
+  firewalld:
+    port: "{{ item }}" 
+    permanent: true
+    state: enabled
+  loop:
+    - 80/tcp
+    - 443/tcp
+- name: 
+  file:
+    path: /var/www/html
+    state: directory
+- name: Copy index
+  template: 
+    src: index.html.j2
+    dest: /var/www/html/index.html
+  become: true
+  notify: Apache restart
